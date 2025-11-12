@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  login-service:
+    build:
+      context: .
+      dockerfile: login-spring/Dockerfile
+    container_name: retrocore_mod2_login
+    depends_on:
+      - mod2-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mod2-db:5432/retrocore_mod2
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      JWT_SECRET: "umasecretmuuitoforte123"
+    networks:
+      - mod2-net
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    container_name: retrocore_mod2_gateway
+    depends_on:
+      - login-service
+    ports:
+      - "9100:9100"
+    networks:
+      - mod2-net
+
+  mod2-db:
+    image: postgres:16
+    container_name: retrocore_mod2_db
+    environment:
+      POSTGRES_DB: retrocore_mod2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5440:5432"
+    networks:
+      - mod2-net
+
+networks:
+  mod2-net:
+    driver: bridge

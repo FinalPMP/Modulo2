@@ -1,0 +1,6 @@
+server:
+  port: 9100
+
+spring:
+  application:
+    name: retrocore_mod2_gateway
